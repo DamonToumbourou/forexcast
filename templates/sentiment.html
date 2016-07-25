@@ -1,0 +1,72 @@
+{% extends "main_layout.html" %}
+{% block title %}Sentiment{% endblock %}
+{% block body %}
+<style>
+    .chart_long div {
+        font: 10px sans-serif;
+        background-color: steelblue;
+        text-align: right;
+        padding: 3px;
+        margin: 1px;
+        color: white;
+    }
+    .chart_short div {
+        font: 10px sans-serif;
+        background-color: red;
+        text-align: right;
+        padding: 3px;
+        margin: 1px;
+        color: white;
+    }
+</style>
+
+<div class="docs-section" id="sentiment">
+    <h4 class="docs-header">TRADER SENTIMENT</h4>
+    <hr>
+    <!-- IG MARKETS ROW -->
+    <div class="row">   
+        <div class="two column"> 
+            <h5>IG MARKETS</h5>
+            <!-- USD/JPY -->
+            <div class="chart_long">
+                <h6>USD/JPY</h6>
+                <div style="width: {{ usd_jpy_long }}px;">{{ usd_jpy_long }}%</div>
+            </div>    
+            <div class="chart_short">
+                <div style="width: {{ usd_jpy_short }}px;">{{ usd_jpy_short }}%</div>
+            </div>
+            <br>
+            <!-- EUR/USD -->    
+            <div class="chart_long">
+                <h6>EUR/USD</h6>
+                <div style="width: {{ eur_usd_long }}px;">{{ eur_usd_long }}%</div>
+            </div>
+            <div class="chart_short">
+                <div style="width: {{ eur_usd_long }}px;">{{ eur_usd_short }}%</div>
+            </div>  
+            <br> 
+            <!-- GBP/USD -->
+            <div class="chart_long">
+                <h6>GBP/USD</h6>
+                <div style="width: {{ gbp_usd_long }}px;">{{ gbp_usd_long }}%</div>
+            </div>
+            <div class="chart_short">
+                <div style="width: {{ gbp_usd_short }}px;">{{ gbp_usd_short }}%</div>
+            </div>
+            <br>
+            <!-- AUD/USD -->
+            <div class="chart_long">
+                <h6>AUD/USD</h6>
+                <div style="width: {{ aud_usd_long }}px;">{{ aud_usd_long }}%</div>
+            </div>
+            <div class="chart_short">
+                <div style="width: {{ aud_usd_short }}px;">{{ aud_usd_short }}%</div>
+            </div>
+        </div>
+    </div>
+    <hr>    
+    <br> 
+    <h6 class="docs-header">DAILY FX</h6>
+    
+</div>
+{% endblock %}

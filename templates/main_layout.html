@@ -25,15 +25,36 @@
     <!-- Favicon
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <link rel="icon" type="image/png" href="static/images/favicon.png">
+    
+    <!-- JavaScript
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
 
     {% endblock %}
     <title>
         {% block title %}{% endblock %}- ForeXcast
     </title> 
-</head>    
-<body>
-    {% block body %}
+</head> 
 
-    {% endblock %}
+<body>
+
+    <div class="container">
+        <nav class="navbar">
+            <ul class="navbar-list">
+                <li class="navbar-link">
+                    <a class="navbar-link" href="home">Home</a>
+                    <a class="navbar-link" href="sentiment">Sentiment</a>
+                </li>
+            </ul>
+        </nav>
+        <section class="header">
+            <div class="full column" style="margin-top: 5%">
+                <h2 class="title">ForeXcast</h2>
+            </div>        
+        </section>
+
+        {% block body %}
+        {% endblock %} 
+    </div>
 </body>
 </html>
