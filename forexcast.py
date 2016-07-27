@@ -4,18 +4,24 @@ from selenium import webdriver
 import requests
 import urlparse
 import re
+import time
 
 app = Flask(__name__)
 
 
-@app.route('/home')
+@app.route('/')
 def home():
     
     return render_template('index.html')
 
 
-@app.route('/sentiment')
-def sentiment():
+@app.route('/language')
+def language():
+    return render_template('language.html')
+
+
+@app.route('/trader')
+def trader():
     # IG Sentiment
     ig_usd_jpy = get_ig_sentiment('usd-jpy')
     ig_eur_usd = get_ig_sentiment('eur-usd')
@@ -38,13 +44,25 @@ def sentiment():
     results = get_dailyfx_sentiment()
     dy_eur_usd_long = results[0]['dy_eur_usd_long']
     dy_eur_usd_short = results[1]['dy_eur_usd_short']
+     
+    dy_usd_jpy_long = results[2]['dy_usd_jpy_long']
+    dy_usd_jpy_short = results[3]['dy_usd_jpy_short']
+    
+    dy_gbp_usd_long = results[4]['dy_gbp_usd_long']
+    dy_gbp_usd_short = results[5]['dy_gbp_usd_short']
 
-    return render_template('sentiment.html', \
+    dy_aud_usd_long = results[6]['dy_aud_usd_long']
+    dy_aud_usd_short = results[7]['dy_aud_usd_short']
+
+    return render_template('trader.html', \
             ig_usd_jpy_long=ig_usd_jpy_long, ig_usd_jpy_short=ig_usd_jpy_short, \
             ig_eur_usd_long=ig_eur_usd_long, ig_eur_usd_short=ig_eur_usd_short, \
             ig_gbp_usd_long=ig_gbp_usd_long, ig_gbp_usd_short=ig_gbp_usd_short, \
             ig_aud_usd_long=ig_aud_usd_long, ig_aud_usd_short=ig_aud_usd_short, \
-            dy_eur_usd_long=dy_eur_usd_long, dy_eur_usd_short=dy_eur_usd_short) 
+            dy_eur_usd_long=dy_eur_usd_long, dy_eur_usd_short=dy_eur_usd_short, \
+            dy_usd_jpy_long=dy_usd_jpy_long, dy_usd_jpy_short=dy_usd_jpy_short, \
+            dy_gbp_usd_long=dy_gbp_usd_long, dy_gbp_usd_short=dy_gbp_usd_short, \
+            dy_aud_usd_long=dy_aud_usd_long, dy_aud_usd_short=dy_aud_usd_short) 
 
 
 def get_ig_sentiment(trading_pair):
@@ -87,7 +105,7 @@ def get_dailyfx_sentiment():
     result.append({'dy_eur_usd_short': dy_eur_usd_short})
     
     # USD/JPY
-    usd_jpy = sentiment[2].find('span', {'class': 'bullishcolor'})
+    usd_jpy = sentiment[2].find('span', {'class': 'bullish-color'}) 
     usd_jpy = usd_jpy.get_text()
     dy_usd_jpy_long = re.search('[0-9]*', usd_jpy).group(0)
     dy_usd_jpy_short = 100 - int(dy_usd_jpy_long)
@@ -96,8 +114,8 @@ def get_dailyfx_sentiment():
     result.append({'dy_usd_jpy_short': dy_usd_jpy_short})
 
     # GBP/USD
-    gbp_usd = sentiment[3].find('span', {'class': 'bullishcolor'})
-    gbp_usd = usd_jpy.get_text()
+    gbp_usd = sentiment[3].find('span', {'class': 'bullish-color'})
+    gbp_usd = gbp_usd.get_text()
     dy_gbp_usd_long = re.search('[0-9]*', gbp_usd).group(0)
     dy_gbp_usd_short = 100 - int(dy_gbp_usd_long)
 
@@ -105,8 +123,8 @@ def get_dailyfx_sentiment():
     result.append({'dy_gbp_usd_short': dy_gbp_usd_short})
     
     # AUD/USD
-    aud_usd = sentiment[4].find('span', {'class': 'bullishcolor'})
-    aud_usd = usd_jpy.get_text()
+    aud_usd = sentiment[4].find('span', {'class': 'bullish-color'})
+    aud_usd = aud_usd.get_text()
     dy_aud_usd_long = re.search('[0-9]*', aud_usd).group(0)
     dy_aud_usd_short = 100 - int(dy_aud_usd_long)
 
@@ -115,6 +133,18 @@ def get_dailyfx_sentiment():
 
     return result
 
+
+def get_oanda_sentiment():
+    # Had to use PhantomJS to get Javascript on page
+    url = 'https://www.oanda.com/forex-trading/analysis/open-position-ratios'
+    page = requests.get(url)
+    soup = bs(page.text, 'html.parser')
+    
+    result = soup.find('li', {'name': 'USD/JPY'})
+    #print result
+    
+    return soup
+get_oanda_sentiment()
 
 if __name__ == "__main__":
     app.run(debug=True, port=5001)
